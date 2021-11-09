@@ -47,10 +47,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
   }
 
   Widget showLoadingIndicator() {
-    return const Center(
-      child: CircularProgressIndicator(
-        color: AppColors.appYellow,
-      ),
+    return Center(
+      child: Image.asset('assets/images/loader.gif'),
     );
   }
 
@@ -71,7 +69,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 2 / 4,
+        childAspectRatio: 2 / 3,
         crossAxisSpacing: 1,
         mainAxisSpacing: 1,
       ),

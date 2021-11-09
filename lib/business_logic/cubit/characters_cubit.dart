@@ -7,7 +7,8 @@ part 'characters_state.dart';
 
 class CharactersCubit extends Cubit<CharactersState> {
   final CharactersRepository _charactersRepository;
-  List<Character> characters = [];
+  List<Character> _characters = [];
+  List<Character> get characters => _characters;
 
   CharactersCubit(this._charactersRepository)
       : super(
@@ -16,7 +17,7 @@ class CharactersCubit extends Cubit<CharactersState> {
 
   Future<void> getAllCharacter() async {
     final characters = await _charactersRepository.getAllCharacters();
-    this.characters = characters;
+    _characters = characters;
     emit(CharactersLoaded(characters));
   }
 }
