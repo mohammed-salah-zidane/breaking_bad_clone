@@ -9,10 +9,24 @@ class CharactersInitial extends CharactersState {
   List<Object> get props => [];
 }
 
+class CharactersLoading extends CharactersState {
+  @override
+  List<Object> get props => [];
+}
+
 class CharactersLoaded extends CharactersState {
   final List<Character> characters;
 
   const CharactersLoaded(this.characters);
+
+  @override
+  List<Object> get props => [characters];
+}
+
+class CharactersFiltered extends CharactersState {
+  final List<Character> characters;
+
+  const CharactersFiltered(this.characters);
 
   @override
   List<Object> get props => [characters];

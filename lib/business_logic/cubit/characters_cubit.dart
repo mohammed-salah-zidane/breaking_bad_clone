@@ -8,16 +8,35 @@ part 'characters_state.dart';
 class CharactersCubit extends Cubit<CharactersState> {
   final CharactersRepository _charactersRepository;
   List<Character> _characters = [];
-  List<Character> get characters => _characters;
 
+  List<Character> get characters => _characters;
+  bool isSearch = false;
   CharactersCubit(this._charactersRepository)
       : super(
           CharactersInitial(),
         );
 
   Future<void> getAllCharacter() async {
+    emit(CharactersLoading());
     final characters = await _charactersRepository.getAllCharacters();
     _characters = characters;
+    emit(CharactersLoaded(characters));
+  }
+
+  void search(String searchKey) {
+    final filteredCharacters = characters
+        .where((character) => character.name!.toLowerCase().contains(searchKey))
+        .toList();
+    emit(CharactersFiltered(filteredCharacters));
+  }
+
+  void startSearch() {
+    isSearch = true;
+    emit(CharactersFiltered(characters));
+  }
+
+  void stopSearch() {
+    isSearch = false;
     emit(CharactersLoaded(characters));
   }
 }
