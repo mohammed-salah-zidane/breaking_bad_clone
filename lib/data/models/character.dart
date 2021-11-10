@@ -29,21 +29,27 @@ class Character {
 
   String? get birthday => _birthday;
 
-  List<String>? get occupation => _occupation;
-
   String? get img => _img;
 
   String? get status => _status;
 
   String? get nickname => _nickname;
 
-  List<int>? get appearance => _appearance;
+  String? get appearance => _appearance?.join(" / ").toString();
 
-  String? get portrayed => _portrayed;
+  String? get actorName => _portrayed;
 
-  String? get category => _category;
+  String? get categoryForTwoSeries => _category;
 
-  List<dynamic>? get betterCallSaulAppearance => _betterCallSaulAppearance;
+  String? get betterCallSaulAppearanceString {
+    if (_betterCallSaulAppearance?.isEmpty == true ||
+        _betterCallSaulAppearance == null) {
+      return "did not participate";
+    }
+    _betterCallSaulAppearance?.join(" / ");
+  }
+
+  String? get jobsString => _occupation?.join(" / ").toString();
 
   Character({
     int? charId,
