@@ -11,7 +11,7 @@ class CharactersCubit extends Cubit<CharactersState> {
   List<Character> _characters = [];
 
   List<Character> get characters => _characters;
-  bool isSearch = false;
+
   CharactersCubit(this._charactersRepository)
       : super(
           CharactersInitial(),
@@ -38,12 +38,10 @@ class CharactersCubit extends Cubit<CharactersState> {
   }
 
   void startSearch() {
-    isSearch = true;
     emit(CharactersFiltered(characters));
   }
 
   void stopSearch() {
-    isSearch = false;
     emit(CharactersLoaded(characters));
   }
 }

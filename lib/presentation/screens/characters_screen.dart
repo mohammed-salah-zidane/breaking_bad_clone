@@ -26,36 +26,36 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.appYellow,
-        leading: _charactersCubit.isSearch
-            ? const BackButton(
-                color: AppColors.appGray,
-              )
-            : Container(),
-        title: _charactersCubit.isSearch
-            ? buildSearchTextField()
-            : buildAppBarTitle(),
-        actions: _buildAppBarActions(),
-      ),
-      body: buildBlocWidget(),
+    return BlocBuilder<CharactersCubit, CharactersState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.appYellow,
+            leading: state is CharactersFiltered
+                ? const BackButton(
+                    color: AppColors.appGray,
+                  )
+                : Container(),
+            title: state is CharactersFiltered
+                ? buildSearchTextField()
+                : buildAppBarTitle(),
+            actions: _buildAppBarActions(state),
+          ),
+          body: buildBlocWidget(state),
+        );
+      },
     );
   }
 
-  Widget buildBlocWidget() {
-    return BlocBuilder<CharactersCubit, CharactersState>(
-      builder: (context, state) {
-        if (state is CharactersLoaded)   {
-          return buildListWidget(state.characters);
-        }else if (state is CharactersFiltered) {
-          return buildListWidget(state.characters);
-        } else  if (state is CharactersLoading) {
-          return showLoadingIndicator();
-        }
-        return buildListWidget(_charactersCubit.characters);
-      },
-    );
+  Widget buildBlocWidget(state) {
+    if (state is CharactersLoaded) {
+      return buildListWidget(state.characters);
+    } else if (state is CharactersFiltered) {
+      return buildListWidget(state.characters);
+    } else if (state is CharactersLoading) {
+      return showLoadingIndicator();
+    }
+    return buildListWidget(_charactersCubit.characters);
   }
 
   Widget showLoadingIndicator() {
@@ -96,13 +96,16 @@ class _CharacterScreenState extends State<CharacterScreen> {
     );
   }
 
-  List<Widget> _buildAppBarActions() {
-    if (!_charactersCubit.isSearch) {
+  List<Widget> _buildAppBarActions(state) {
+    if (state is CharactersFiltered) {
       return [
         IconButton(
-          onPressed: _startSearch,
+          onPressed: () {
+            _stopSearching();
+            Navigator.pop(context);
+          },
           icon: const Icon(
-            Icons.search,
+            Icons.clear,
             color: AppColors.appGray,
           ),
         ),
@@ -111,12 +114,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
     return [
       IconButton(
-        onPressed: () {
-          _stopSearching();
-          Navigator.pop(context);
-        },
+        onPressed: _startSearch,
         icon: const Icon(
-          Icons.clear,
+          Icons.search,
           color: AppColors.appGray,
         ),
       ),
