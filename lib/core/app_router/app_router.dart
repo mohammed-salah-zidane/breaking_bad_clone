@@ -7,7 +7,6 @@ import 'package:breaking_bad_clone/presentation/screens/characters_details_scree
 import 'package:breaking_bad_clone/presentation/screens/characters_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
@@ -25,14 +24,17 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (BuildContext context) => _charactersCubit,
-            child: CharacterScreen(),
+            child: const CharacterScreen(),
           ),
         );
 
       case AppConstants.charactersDetailsScreen:
         final character = settings.arguments as Character;
         return MaterialPageRoute(
-          builder: (_) => CharacterDetailsScreen(character: character),
+          builder: (_) => BlocProvider(
+              create: (BuildContext context) =>
+                  CharactersCubit(_charactersRepository),
+              child: CharacterDetailsScreen(character: character)),
         );
     }
   }

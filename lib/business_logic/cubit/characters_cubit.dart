@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:breaking_bad_clone/data/models/character.dart';
+import 'package:breaking_bad_clone/data/models/quote.dart';
 import 'package:breaking_bad_clone/data/repository/characters_repository.dart';
 import 'package:equatable/equatable.dart';
 
@@ -21,6 +22,12 @@ class CharactersCubit extends Cubit<CharactersState> {
     final characters = await _charactersRepository.getAllCharacters();
     _characters = characters;
     emit(CharactersLoaded(characters));
+  }
+
+  Future<void> getCharacterQuote(String name) async {
+    final quotes = await _charactersRepository.getCharacterQuotes(name);
+    print(quotes);
+    emit(CharacterQuotesLoaded(quotes));
   }
 
   void search(String searchKey) {

@@ -1,12 +1,28 @@
+import 'package:breaking_bad_clone/business_logic/cubit/characters_cubit.dart';
 import 'package:breaking_bad_clone/core/constants/app_colors.dart';
 import 'package:breaking_bad_clone/data/models/character.dart';
+import 'package:breaking_bad_clone/data/models/quote.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
-class CharacterDetailsScreen extends StatelessWidget {
+class CharacterDetailsScreen extends StatefulWidget {
   final Character character;
 
   const CharacterDetailsScreen({Key? key, required this.character})
       : super(key: key);
+
+  @override
+  State<CharacterDetailsScreen> createState() => _CharacterDetailsScreenState();
+}
+
+class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<CharactersCubit>(context)
+        .getCharacterQuote(widget.character.name ?? "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,49 +43,52 @@ class CharacterDetailsScreen extends StatelessWidget {
                     children: [
                       CharacterInfo(
                         title: 'Job : ',
-                        value: character.jobsString ?? "",
+                        value: widget.character.jobsString ?? "",
                       ),
                       const AppDivider(
                         endIndent: 315,
                       ),
                       CharacterInfo(
                         title: 'Appeared in : ',
-                        value: character.categoryForTwoSeries ?? "",
+                        value: widget.character.categoryForTwoSeries ?? "",
                       ),
                       const AppDivider(
                         endIndent: 240,
                       ),
                       CharacterInfo(
                         title: 'Seasons : ',
-                        value: character.appearance ?? "",
+                        value: widget.character.appearance ?? "",
                       ),
                       const AppDivider(
                         endIndent: 270,
                       ),
                       CharacterInfo(
                         title: 'Status : ',
-                        value: character.status ?? "",
+                        value: widget.character.status ?? "",
                       ),
                       const AppDivider(
                         endIndent: 290,
                       ),
                       CharacterInfo(
                         title: 'Better Call Sauk Seasons : ',
-                        value: character.betterCallSaulAppearanceString ?? "",
+                        value:
+                            widget.character.betterCallSaulAppearanceString ??
+                                "",
                       ),
                       const AppDivider(
                         endIndent: 150,
                       ),
                       CharacterInfo(
                         title: 'Actor/Actress : ',
-                        value: character.actorName ?? "",
+                        value: widget.character.actorName ?? "",
                       ),
                       const AppDivider(
                         endIndent: 230,
                       ),
                       const SizedBox(
                         height: 30,
-                      )
+                      ),
+                      buildQuoteWidget(),
                     ],
                   ),
                 ),
@@ -93,19 +112,72 @@ class CharacterDetailsScreen extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         title: Text(
-          '${character.nickname}',
+          '${widget.character.nickname}',
           style: const TextStyle(
             color: AppColors.appWhite,
           ),
           textAlign: TextAlign.start,
         ),
         background: Hero(
-          tag: character.charId ?? 0,
+          tag: widget.character.charId ?? 0,
           child: Image.network(
-            character.img ?? "",
+            widget.character.img ?? "",
             fit: BoxFit.cover,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildQuoteWidget() {
+    return BlocBuilder<CharactersCubit, CharactersState>(
+      builder: (context, state) {
+        if (state is CharacterQuotesLoaded) {
+          return showQuotesAnimator(state.quotes);
+        }
+        return showLoadingIndicator();
+      },
+    );
+  }
+
+  Widget showQuotesAnimator(List<Quote> quotes) {
+    if (quotes.isNotEmpty) {
+      return DefaultTextStyle(
+        style: const TextStyle(
+          fontSize: 20.0,
+          color: AppColors.appWhite,
+          shadows: [
+            Shadow(
+              blurRadius: 7,
+              color: AppColors.appYellow,
+              offset: Offset(
+                0,
+                0,
+              ),
+            ),
+          ],
+        ),
+        child: AnimatedTextKit(
+          animatedTexts: [
+            ...quotes.map<FlickerAnimatedText>(
+              (charQuote) {
+                return FlickerAnimatedText(
+                  '"${charQuote.quote}"',
+                );
+              },
+            ),
+          ],
+          isRepeatingAnimation: true,
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget showLoadingIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(
+        color: AppColors.appYellow,
       ),
     );
   }

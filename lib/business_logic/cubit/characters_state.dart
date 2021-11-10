@@ -31,3 +31,12 @@ class CharactersFiltered extends CharactersState {
   @override
   List<Object> get props => [characters];
 }
+
+class CharacterQuotesLoaded extends CharactersState {
+  final List<Quote> quotes;
+
+  const CharacterQuotesLoaded(this.quotes);
+
+  @override
+  List<Object> get props => [quotes];
+}
